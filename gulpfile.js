@@ -15,34 +15,45 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var watching = false;
 
-gulp.task('mocha', function () {
-  return gulp.src(['test/**/*.js', '!test/models/*.js', '!test/integration/runner.js'], { read: false })
-  .pipe(mocha({
-    reporter: 'spec',
-    globals: {
-      should: require('should').noConflict()
-    }
-  }))
-  .once('error', function (err) {
-    console.log('mocha errored... ');
-    if (watching) {
-      this.emit('end');
-    } else {
-      process.exit(1);
-    }
-  })
-  .once('end', function () {
-    console.log('mocha ended...');
-    if (watching) {
-      this.emit('end');
-    } else {
-      process.exit(0);
-    }
+//gulp.task('mocha', function () {
+//  return gulp.src(['test/**/*.js', '!test/models/*.js', '!test/integration/runner.js'], { read: false })
+//  .pipe(mocha({
+//    reporter: 'spec',
+//    globals: {
+//      should: require('should').noConflict()
+//    }
+//  }))
+//  .once('error', function (err) {
+//    console.log('mocha errored... ');
+//    if (watching) {
+//      this.emit('end');
+//    } else {
+//      process.exit(1);
+//    }
+//  })
+//  .once('end', function () {
+//    console.log('mocha ended...');
+//    if (watching) {
+//      this.emit('end');
+//    } else {
+//      process.exit(0);
+//    }
+//  });
+//});
+
+gulp.task('mocha', function (done) {
+  var cp = spawn('node_modules/.bin/nyc', [
+    '--reporter=text',
+    '--reporter=lcov',
+    'mocha', 'test/*.js'
+  ], {stdio: 'inherit'});
+  cp.on('close', (code) => {
+    done(code === 0 ? null : new Error('mocha failed rc=' + code));
   });
 });
 
 gulp.task('waterline', function (done) {
-  var cp = spawn('node', ['test/integration/runner', '-R', 'spec', '-b'], {stdio: 'inherit'});
+  var cp = spawn('node_modules/.bin/nyc', ['node', 'test/integration/runner.js', '-R', 'spec', '-b'], {stdio: 'inherit'});
   cp.on('close', (code) => {
     console.log('waterline adapter tests completed rc:', code);
     done();

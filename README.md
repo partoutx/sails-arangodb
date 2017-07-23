@@ -122,7 +122,12 @@ To run the waterline adapter compliance tests:
 $ gulp waterline
 ```
 
-Generate api jsdocs:
+### Code Coverage
+Both of the mocha and waterline tests are run through nyc/istanbul code coverage
+analysis tools.  A text summary is show at the end of each test run and a `coverage/`
+folder created containing a html lcov report that you can point your browser to.
+
+### Generating api jsdocs:
 ```
 $ gulp docs
 ```

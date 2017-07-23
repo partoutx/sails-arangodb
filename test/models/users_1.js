@@ -41,7 +41,9 @@ const Users = Waterline.Collection.extend({
       collection: 'profiles_1',
       via: 'id',
       edge: 'profileOf'
-    }
+    },
+
+    anArray: 'array'
 
   }
 });
