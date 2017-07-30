@@ -26,7 +26,7 @@ This adapter has been developed pretty quickly and may contain bugs.
 To install this adapter, run:
 
 ```sh
-$ npm install sails-arangodb
+$ npm install @partoutx/sails-arangodb
 ```
 
 ### Usage
