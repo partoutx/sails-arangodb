@@ -1,6 +1,7 @@
 ![image_squidhome@2x.png](http://i.imgur.com/RIvu9.png)
 
 # sails-arangodb
+**This is a fork of gabriel-letarte/sails-arangodb project**
 
 Provides easy access to `ArangoDB` from Sails.js & Waterline.
 
