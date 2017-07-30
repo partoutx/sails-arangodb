@@ -1,6 +1,7 @@
 ![image_squidhome@2x.png](http://i.imgur.com/RIvu9.png)
 
 # sails-arangodb
+**This is a fork of gabriel-letarte/sails-arangodb project**
 
 Provides easy access to `ArangoDB` from Sails.js & Waterline.
 
@@ -122,7 +123,12 @@ To run the waterline adapter compliance tests:
 $ gulp waterline
 ```
 
-Generate api jsdocs:
+### Code Coverage
+Both of the mocha and waterline tests are run through nyc/istanbul code coverage
+analysis tools.  A text summary is show at the end of each test run and a `coverage/`
+folder created containing a html lcov report that you can point your browser to.
+
+### Generating api jsdocs:
 ```
 $ gulp docs
 ```

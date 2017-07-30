@@ -83,6 +83,33 @@ describe('adapter', function () {
   });
 
   describe('methods', function () {
+
+    describe('quote', () => {
+      it('should quote a string', () => {
+        should.exist(models.pets_1.quote);
+        models.pets_1.quote.should.be.a.Function();
+        var quoted = models.pets_1.quote('ABC');
+        should.exist(quoted);
+        quoted.should.eql('"ABC"');
+      });
+
+      it('should not quote a number but return it as a string', () => {
+        should.exist(models.pets_1.quote);
+        models.pets_1.quote.should.be.a.Function();
+        var quoted = models.pets_1.quote(100);
+        should.exist(quoted);
+        quoted.should.eql('100');
+      });
+
+      it('should quote an object', () => {
+        should.exist(models.pets_1.quote);
+        models.pets_1.quote.should.be.a.Function();
+        var quoted = models.pets_1.quote({aaa:100, bbb:'one'});
+        should.exist(quoted);
+        quoted.should.eql('{"aaa": 100, "bbb": "one"}');
+      });
+    });
+
     it('should create a new document in pets', (done) => {
       models.pets_1.create({name: 'Woof'})
       .then((pet) => {
@@ -124,7 +151,16 @@ describe('adapter', function () {
     });
 
     it('should create a new document in users', (done) => {
-      models.users_1.create({name: 'Fred Blogs', pet: savePetId, second: 'match'})
+      models.users_1.create({
+        name: 'Fred Blogs',
+        first_name: 'Fred',
+        pet: savePetId,
+        second: 'match',
+        anArray: [
+          {element_name: 'one', element_value: 1},
+          {element_name: 'two', element_value: 2}
+        ]
+      })
       .then((user) => {
         should.exist(user);
         user.should.have.property('id');
@@ -133,7 +169,9 @@ describe('adapter', function () {
         user.should.have.property('name');
         user.should.have.property('createdAt');
         user.should.have.property('updatedAt');
+        user.should.have.property('anArray');
         user.name.should.equal('Fred Blogs');
+        user.anArray.length.should.eql(2);
         saveId = user.id;
         done();
       })
@@ -729,6 +767,61 @@ describe('adapter', function () {
             should.not.exist(doc.name);
             done();
           });
+        })
+        .catch((err) => {
+          done(err);
+        });
+      });
+    });
+
+    describe('query', function () {
+      let id;
+      beforeEach(function (done) {
+        var user = {
+          name: 'query test',
+          first_name: 'query',
+          type: 'query test'
+        };
+        models.users_1.create(user)
+        .then((user) => {
+          id = user.id;
+          done();
+        });
+      });
+
+      afterEach(function (done) {
+        models.users_1.destroy(id)
+        .then(() => {
+          done();
+        });
+      });
+
+      it('should return const string', function (done) {
+        models.users_1.query('RETURN "FOO"')
+        .then((res) => {
+          should.exist(res);
+          res.should.be.an.Array();
+          res.length.should.eql(1);
+          res[0].should.eql('FOO');
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+      });
+
+      it('should return the query test user', function (done) {
+        models.users_1.query(`
+FOR u in users_1
+  FILTER u._id=="${id}"
+  RETURN u
+`)
+        .then((res) => {
+          should.exist(res);
+          res.should.be.an.Array();
+          res.length.should.eql(1);
+          res[0].name.should.eql('query test');
+          done();
         })
         .catch((err) => {
           done(err);
