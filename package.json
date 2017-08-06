@@ -1,6 +1,6 @@
 {
   "name": "@partoutx/sails-arangodb",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Arangodb adapter for Sails / Waterline",
   "main": "./lib/adapter.js",
   "scripts": {
@@ -21,6 +21,7 @@
   ],
   "author": "Gabriel Letarte <gabriel.letarte@gmail.com>",
   "contributors": [
+    "Gabriel Letarte <gabriel.letarte@gmail.com>",
     "Graham Bevan <graham.bevan@ntlworld.com>"
   ],
   "license": "MIT",
