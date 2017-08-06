@@ -37,6 +37,26 @@ let db,
     savePetId,
     saveId;
 
+function initDb(done) {
+  orm.loadCollection(Users_1);
+  orm.loadCollection(Pets_1);
+  orm.loadCollection(Profiles_1);
+  orm.loadCollection(Users_Profiles_Graph);
+  orm.loadCollection(Users_Users_Graph);
+  orm.initialize(waterline_config, (err, o) => {
+    if (err) {
+      return done(err);
+    }
+    models = o.collections;
+    connections = o.connections;
+
+    connections.arangodb._adapter.getDB('arangodb', '', (n_db) => {
+      db = n_db;
+      done();
+    });
+  });
+}
+
 describe('adapter', function () {
 
   before(function (done) {
@@ -49,25 +69,12 @@ describe('adapter', function () {
 
     sys_db.dropDatabase(config.database)
     .then(() => {
-      orm.loadCollection(Users_1);
-      orm.loadCollection(Pets_1);
-      orm.loadCollection(Profiles_1);
-      orm.loadCollection(Users_Profiles_Graph);
-      orm.loadCollection(Users_Users_Graph);
-      orm.initialize(waterline_config, (err, o) => {
-        if (err) {
-          return done(err);
-        }
-        models = o.collections;
-        connections = o.connections;
-
-        connections.arangodb._adapter.getDB('arangodb', '', (n_db) => {
-          db = n_db;
-          done();
-        });
-      });
+      initDb(done);
     })
     .catch((err) => {
+      if (err.code === 404) {
+        return initDb(done);
+      }
       done(err);
     });
   });
