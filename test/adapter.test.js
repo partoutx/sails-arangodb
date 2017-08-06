@@ -571,6 +571,7 @@ describe('adapter', function () {
           models.users_1.create({name: 'Delete Me', pet: savePetId, second: 'match'})
           .then((user) => {
             done();
+            return null;  // avoid bluebird promise warning
           })
           .catch((err) => {
             done(err);
@@ -724,6 +725,10 @@ describe('adapter', function () {
         .then((user) => {
           id = user.id;
           done();
+          return null;  // avoid bluebird promise warning
+        })
+        .catch((err) => {
+          done(err);
         });
       });
 
@@ -852,6 +857,45 @@ FOR u in users_1
       })
       .catch((err) => {
         done(err);
+      });
+    });
+
+    describe('createGraph', () => {
+      it('should be present as a method', () => {
+        should.exist(models.users_1.createGraph);
+      });
+
+      it('should create named graph testGraph', (done) => {
+        models.users_1.createGraph('testGraph')
+        .then((res) => {
+          should.exist(res);
+          should.exist(res.name);
+          res.name.should.eql('testGraph');
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+      });
+    });
+
+    describe('deleteGraph', () => {
+      it('should be present as a method', () => {
+        should.exist(models.users_1.deleteGraph);
+      });
+
+      it('should delete named graph testGraph', (done) => {
+        models.users_1.deleteGraph('testGraph')
+        .then((res) => {
+          should.exist(res);
+          should.exist(res.removed);
+          res.removed.should.eql(true);
+          res.error.should.eql(false);
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
       });
     });
 
