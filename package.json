@@ -1,6 +1,6 @@
 {
   "name": "@partoutx/sails-arangodb",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Arangodb adapter for Sails / Waterline",
   "main": "./lib/adapter.js",
   "scripts": {
