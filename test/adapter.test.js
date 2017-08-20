@@ -161,6 +161,7 @@ describe('adapter', function () {
       models.users_1.create({
         name: 'Fred Blogs',
         first_name: 'Fred',
+        startest: '****Awesome****',
         pet: savePetId,
         second: 'match',
         anArray: [
@@ -178,6 +179,7 @@ describe('adapter', function () {
         user.should.have.property('updatedAt');
         user.should.have.property('anArray');
         user.name.should.equal('Fred Blogs');
+        user.startest.should.equal('****Awesome****');
         user.anArray.length.should.eql(2);
         saveId = user.id;
         done();
@@ -274,6 +276,36 @@ describe('adapter', function () {
         should.exist(users);
         users.should.be.an.Array();
         users.length.should.equal(0);
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
+    it('should find user by startest (case insensitive)', (done) => {
+      models.users_1.find({startest: {contains: '**Awesome**', caseSensitive: false}})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(1);
+        const user = users[0];
+        user.name.should.equal('Fred Blogs');
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
+    it('should find user by startest (case sensitive)', (done) => {
+      models.users_1.find({startest: {contains: '**Awesome**', caseSensitive: true}})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(1);
+        const user = users[0];
+        user.name.should.equal('Fred Blogs');
         done();
       })
       .catch((err) => {
