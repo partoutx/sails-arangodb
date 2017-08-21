@@ -284,7 +284,7 @@ describe('adapter', function () {
     });
 
     it('should find user by startest (case insensitive)', (done) => {
-      models.users_1.find({startest: {contains: '**Awesome**', caseSensitive: false}})
+      models.users_1.find({startest: {contains: '**awesome**', caseSensitive: false}})
       .then((users) => {
         should.exist(users);
         users.should.be.an.Array();
@@ -306,6 +306,62 @@ describe('adapter', function () {
         users.length.should.equal(1);
         const user = users[0];
         user.name.should.equal('Fred Blogs');
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
+    it('should find user by startest with =~ regex (case insensitive)', (done) => {
+      models.users_1.find({startest: {'=~': '.*awesome.*', caseSensitive: false}})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(1);
+        const user = users[0];
+        user.name.should.equal('Fred Blogs');
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
+    it('should find user by startest with =~ regex (case sensitive)', (done) => {
+      models.users_1.find({startest: {'=~': '.*Awesome.*', caseSensitive: true}})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(1);
+        const user = users[0];
+        user.name.should.equal('Fred Blogs');
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
+    it('should not find user by startest with !~ regex (case insensitive)', (done) => {
+      models.users_1.find({startest: {'!~': '.*awesome.*', caseSensitive: false}})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(0);
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
+    it('should not find user by startest with !~ regex (case sensitive)', (done) => {
+      models.users_1.find({startest: {'!~': '.*Awesome.*', caseSensitive: true}})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(0);
         done();
       })
       .catch((err) => {
