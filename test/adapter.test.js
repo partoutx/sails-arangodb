@@ -162,6 +162,7 @@ describe('adapter', function () {
         name: 'Fred Blogs',
         first_name: 'Fred',
         startest: '****Awesome****',
+        message: 'line1\nline2\n',
         pet: savePetId,
         second: 'match',
         anArray: [
@@ -362,6 +363,22 @@ describe('adapter', function () {
         should.exist(users);
         users.should.be.an.Array();
         users.length.should.equal(0);
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+
+    it('should find user by multiline message', (done) => {
+      models.users_1.find({message: 'line1\nline2\n'})
+      .then((users) => {
+        should.exist(users);
+        users.should.be.an.Array();
+        users.length.should.equal(1);
+        const user = users[0];
+        user.name.should.equal('Fred Blogs');
+        user.message.should.equal('line1\nline2\n');
         done();
       })
       .catch((err) => {
