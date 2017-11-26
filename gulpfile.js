@@ -19,7 +19,7 @@ gulp.task('mocha', function (done) {
   var cp = spawn('node_modules/.bin/nyc', [
     '--reporter=text',
     '--reporter=lcov',
-    'mocha', 'test/*.js'
+    'node_modules/.bin/mocha', 'test/*.js'
   ], {stdio: 'inherit'});
   cp.on('close', (code) => {
     done(code === 0 ? null : new Error('mocha failed rc=' + code));
